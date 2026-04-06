@@ -7,6 +7,7 @@ services:
     ports:
       - "9092:9092"
       - "9101:9101"
+      - "7071:7071"
     environment:
       KAFKA_NODE_ID: 1
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
@@ -47,6 +48,10 @@ services:
       KAFKA_CONFLUENT_TELEMETRY_METRICS_COLLECTOR_INTERVAL_MS: "60000"
       KAFKA_CONFLUENT_TELEMETRY_REMOTECONFIG_CONFLUENT_ENABLED: "false"
       KAFKA_CONFLUENT_CONSUMER_LAG_EMITTER_ENABLED: "true"
+      KAFKA_OPTS: >
+        -javaagent:/opt/jmx-exporter/jmx_prometheus_javaagent.jar=7071:/opt/jmx-exporter/config.yml
+    volumes:
+      - ./jmx-exporter:/opt/jmx-exporter
 
   schema-registry:
     image: confluentinc/cp-schema-registry:8.2.0
@@ -234,7 +239,7 @@ services:
       GF_SECURITY_ADMIN_PASSWORD: admin
       GF_DATASOURCES_DEFAULT_NAME: Prometheus
       GF_DATASOURCES_DEFAULT_TYPE: prometheus
-      GF_DATASOURCES_DEFAULT_URL: localhost:9090
+      GF_DATASOURCES_DEFAULT_URL: prometheus:9090
       GF_DATASOURCES_DEFAULT_ACCESS: proxy
       GF_DATASOURCES_DEFAULT_IS_DEFAULT: "true"
     volumes:

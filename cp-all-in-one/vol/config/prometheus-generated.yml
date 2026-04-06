@@ -20,7 +20,9 @@ rule_files:
 # A scrape configuration containing exactly one endpoint to scrape:
 # Here it's Prometheus itself.
 scrape_configs:
-
+  - job_name: 'kafka'
+    static_configs:
+      - targets: ['broker:7071']
 # this rule helps flaten the resource attributes
 otlp:
   promote_resource_attributes: ["host.hostname", "java.version", "kafka.broker.id", "kafka.cluster.id", "kafka.version", "type"]
